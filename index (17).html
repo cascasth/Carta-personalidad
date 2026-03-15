@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba de Ascendente · FreeAstrologyAPI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f5f3ef; min-height: 100vh; padding: 30px 20px; color: #2c2a27; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #7a7870; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 12px; font-weight: 600; color: #7a7870; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  label { font-size: 12px; color: #7a7870; display: block; margin-bottom: 4px; }
+  input { width: 100%; padding: 9px 12px; border: 1.5px solid #e0ddd6; border-radius: 8px; font-size: 14px; color: #2c2a27; background: #faf9f7; }
+  input:focus { outline: none; border-color: #854F0B; }
+  .full { grid-column: 1 / -1; }
+  .key-input { font-family: monospace; font-size: 13px; letter-spacing: .05em; }
+  button { width: 100%; padding: 13px; background: #2c2a27; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+  button:hover { background: #444; }
+  button:disabled { background: #bbb; cursor: not-allowed; }
+  .personas { display: flex; gap: 8px; margin-bottom: 16px; }
+  .pb { flex: 1; padding: 8px; background: #f5f3ef; border: 1.5px solid #e0ddd6; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: #2c2a27; text-align: center; }
+  .pb:hover { background: #ede9e3; }
+  .result { background: #fff; border-radius: 14px; padding: 20px; display: none; }
+  .result.visible { display: block; }
+  .asc-box { background: #fdf6ec; border: 2px solid #854F0B; border-radius: 12px; padding: 20px; margin-bottom: 16px; text-align: center; }
+  .asc-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: #854F0B; font-weight: 600; margin-bottom: 6px; }
+  .asc-val { font-size: 32px; font-weight: 600; color: #2c2a27; }
+  .asc-deg { font-size: 13px; color: #7a7870; margin-top: 4px; }
+  .check { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 500; }
+  .check.ok { color: #3B6D11; }
+  .check.no { color: #993C1D; }
+  .casas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+  .casa { background: #f5f3ef; border-radius: 8px; padding: 8px 10px; }
+  .c-num { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: #7a7870; font-weight: 600; }
+  .c-val { font-size: 13px; font-weight: 500; color: #2c2a27; margin-top: 2px; }
+  .c-deg { font-size: 11px; color: #aaa89f; }
+  .raw { background: #1a1a1a; color: #7fff7f; border-radius: 10px; padding: 14px; font-size: 11px; font-family: monospace; overflow-x: auto; margin-top: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; }
+  .err { background: #fff0f0; border: 2px solid #e24b4a; border-radius: 10px; padding: 14px 16px; color: #a32d2d; font-size: 13px; margin-top: 12px; display: none; line-height: 1.6; }
+  .err.visible { display: block; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .note { font-size: 11px; color: #aaa89f; margin-top: 10px; line-height: 1.6; background: #f9f8f5; border-radius: 8px; padding: 10px 12px; }
+  .tip { font-size: 12px; color: #3B6D11; background: #eaf3de; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<h1>🔭 Verificar Ascendente</h1>
+<p class="sub">Conectando con FreeAstrologyAPI · Requiere API key gratuita</p>
+
+<div class="card">
+  <h2>Tu API Key</h2>
+  <div class="tip">
+    Regístrate gratis en <strong>freeastrologyapi.com/signup</strong> → entra a tu dashboard → copia tu <code>x-api-key</code> y pégala aquí.
+  </div>
+  <div class="row">
+    <div class="full">
+      <label>API Key (x-api-key)</label>
+      <input class="key-input" type="text" id="apikey" placeholder="Pega aquí tu API key...">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Datos de nacimiento</h2>
+  <div class="personas">
+    <button class="pb" onclick="cargar('teresa')">♑ Teresa · 5 ene 1978 · 1am · CDMX</button>
+    <button class="pb" onclick="cargar('maria')">♒ María Teresa · 30 ene 1957 · 11am · CDMX</button>
+  </div>
+
+  <div class="row">
+    <div><label>Día</label><input type="number" id="dia" min="1" max="31"></div>
+    <div><label>Mes</label><input type="number" id="mes" min="1" max="12"></div>
+  </div>
+  <div class="row">
+    <div><label>Año</label><input type="number" id="anio"></div>
+    <div><label>Hora (0–23)</label><input type="number" id="hora" min="0" max="23"></div>
+  </div>
+  <div class="row">
+    <div><label>Minutos</label><input type="number" id="min" value="0" min="0" max="59"></div>
+    <div><label>Zona horaria (número)</label><input type="text" id="tz" placeholder="-6"></div>
+  </div>
+  <div class="row">
+    <div><label>Latitud</label><input type="text" id="lat" placeholder="19.4326"></div>
+    <div><label>Longitud</label><input type="text" id="lon" placeholder="-99.1332"></div>
+  </div>
+
+  <div class="note">
+    📍 CDMX: lat 19.4326, lon -99.1332, tz -6 (invierno) / -5 (verano)<br>
+    El 5 enero 1978 y el 30 enero 1957 → zona horaria -6 (sin horario de verano)
+  </div>
+
+  <button id="btn" onclick="consultar()" style="margin-top:14px">🔍 Calcular ascendente</button>
+</div>
+
+<div class="result" id="result">
+  <div class="asc-box">
+    <div class="asc-lbl">Ascendente (Casa 1)</div>
+    <div class="asc-val" id="asc-val">—</div>
+    <div class="asc-deg" id="asc-deg"></div>
+    <div class="check" id="check"></div>
+  </div>
+
+  <h2 style="font-size:12px; color:#7a7870; text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px">Las 12 casas</h2>
+  <div class="casas" id="casas"></div>
+
+  <details style="margin-top:14px">
+    <summary style="font-size:12px; color:#7a7870; cursor:pointer; padding:4px 0">Ver respuesta completa de la API</summary>
+    <div class="raw" id="raw"></div>
+  </details>
+</div>
+
+<div class="err" id="err"></div>
+
+<script>
+// CDMX datos
+const CDMX = { lat: 19.4326, lon: -99.1332, tz: -6 };
+
+// Ascendentes esperados (para verificación)
+const ESPERADOS = {
+  teresa: 'Libra',
+  maria: 'Aries'
+};
+
+let personaActual = '';
+
+function cargar(quien) {
+  personaActual = quien;
+  if (quien === 'teresa') {
+    document.getElementById('dia').value = 5;
+    document.getElementById('mes').value = 1;
+    document.getElementById('anio').value = 1978;
+    document.getElementById('hora').value = 1;
+    document.getElementById('min').value = 0;
+  } else {
+    document.getElementById('dia').value = 30;
+    document.getElementById('mes').value = 1;
+    document.getElementById('anio').value = 1957;
+    document.getElementById('hora').value = 11;
+    document.getElementById('min').value = 0;
+  }
+  document.getElementById('lat').value = CDMX.lat;
+  document.getElementById('lon').value = CDMX.lon;
+  document.getElementById('tz').value = CDMX.tz;
+}
+
+const SIGNOS_ES = {
+  'Aries': 'Aries', 'Taurus': 'Tauro', 'Gemini': 'Géminis',
+  'Cancer': 'Cáncer', 'Leo': 'Leo', 'Virgo': 'Virgo',
+  'Libra': 'Libra', 'Scorpio': 'Escorpio', 'Sagittarius': 'Sagitario',
+  'Capricorn': 'Capricornio', 'Aquarius': 'Acuario', 'Pisces': 'Piscis'
+};
+
+async function consultar() {
+  const apikey = document.getElementById('apikey').value.trim();
+  const btn = document.getElementById('btn');
+  const errDiv = document.getElementById('err');
+  errDiv.classList.remove('visible');
+  document.getElementById('result').classList.remove('visible');
+
+  if (!apikey) {
+    errDiv.innerHTML = '⚠️ Pega tu API key primero. La obtienes gratis en <strong>freeastrologyapi.com/signup</strong>';
+    errDiv.classList.add('visible');
+    return;
+  }
+
+  const dia  = parseInt(document.getElementById('dia').value);
+  const mes  = parseInt(document.getElementById('mes').value);
+  const anio = parseInt(document.getElementById('anio').value);
+  const hora = parseInt(document.getElementById('hora').value);
+  const min  = parseInt(document.getElementById('min').value) || 0;
+  const tz   = parseFloat(document.getElementById('tz').value);
+  const lat  = parseFloat(document.getElementById('lat').value);
+  const lon  = parseFloat(document.getElementById('lon').value);
+
+  if (!dia || !mes || !anio || isNaN(hora) || isNaN(tz) || isNaN(lat) || isNaN(lon)) {
+    errDiv.innerHTML = '⚠️ Usa uno de los botones de carga rápida o llena todos los campos.';
+    errDiv.classList.add('visible');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Calculando...';
+
+  const payload = {
+    year: anio, month: mes, date: dia,
+    hours: hora, minutes: min, seconds: 0,
+    latitude: lat, longitude: lon,
+    timezone: tz,
+    config: {
+      observation_point: 'topocentric',
+      ayanamsha: 'tropical',
+      house_system: 'Placidus',
+      language: 'es'
+    }
+  };
+
+  try {
+    const res = await fetch('https://json.freeastrologyapi.com/western/houses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apikey
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Calcular ascendente';
+
+    if (!res.ok || data.statusCode !== 200) {
+      errDiv.innerHTML = `
+        <strong>Error de la API (${res.status}):</strong><br>
+        ${data.message || data.error || JSON.stringify(data)}<br><br>
+        Verifica que tu API key sea correcta y esté activa.
+      `;
+      errDiv.classList.add('visible');
+      return;
+    }
+
+    // Mostrar resultado
+    document.getElementById('result').classList.add('visible');
+    document.getElementById('raw').textContent = JSON.stringify(data, null, 2);
+
+    const houses = data.output.Houses;
+    const casa1  = houses[0]; // House 1 = Ascendente
+    const signoEN = casa1.zodiac_sign.name.en;
+    const signoES = casa1.zodiac_sign.name.es || SIGNOS_ES[signoEN] || signoEN;
+    const grado  = casa1.normDegree.toFixed(2);
+
+    document.getElementById('asc-val').textContent = signoES;
+    document.getElementById('asc-deg').textContent = `${grado}° de ${signoES} (${signoEN})`;
+
+    // Verificación
+    const esperado = ESPERADOS[personaActual];
+    if (esperado) {
+      const coincide = signoEN === esperado;
+      const checkEl = document.getElementById('check');
+      checkEl.textContent = coincide
+        ? `✅ Correcto — coincide con tu cálculo (${esperado})`
+        : `⚠️ Diferente al esperado (${esperado}). Revisar horario de verano o sistema de casas.`;
+      checkEl.className = 'check ' + (coincide ? 'ok' : 'no');
+    } else {
+      document.getElementById('check').textContent = '';
+    }
+
+    // Mostrar las 12 casas
+    const casasDiv = document.getElementById('casas');
+    casasDiv.innerHTML = '';
+    houses.forEach(h => {
+      const sigES = h.zodiac_sign.name.es || SIGNOS_ES[h.zodiac_sign.name.en] || h.zodiac_sign.name.en;
+      const div = document.createElement('div');
+      div.className = 'casa';
+      div.innerHTML = `
+        <div class="c-num">Casa ${h.House}${h.House === 1 ? ' · ASC' : h.House === 10 ? ' · MC' : ''}</div>
+        <div class="c-val">${sigES}</div>
+        <div class="c-deg">${h.normDegree.toFixed(1)}°</div>
+      `;
+      casasDiv.appendChild(div);
+    });
+
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Calcular ascendente';
+    errDiv.innerHTML = `
+      <strong>Error de conexión:</strong> ${e.message}<br><br>
+      Puede ser un problema de CORS al correr el archivo localmente. 
+      En ese caso abre el archivo desde un servidor local o prueba desde Chrome con CORS desactivado.
+    `;
+    errDiv.classList.add('visible');
+  }
+}
+</script>
+</body>
+</html>
