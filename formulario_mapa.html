@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Identidad · Lignum Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f7f3ed;
+    --gold: #9c6f2e;
+    --gold-light: #c49a52;
+    --dust: #e8e0d4;
+    --muted: #8a7d6e;
+    --error: #8b2c2c;
+    --success: #2c5f3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(156,111,46,.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(156,111,46,.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 52px; }
+  .lignum { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 8vw, 52px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .title em { font-style: italic; color: var(--gold); }
+  .subtitle { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 380px; margin: 0 auto; }
+
+  /* Divider */
+  .divider { display: flex; align-items: center; gap: 12px; margin: 32px 0; }
+  .divider-line { flex: 1; height: 1px; background: var(--dust); }
+  .divider-glyph { font-size: 16px; color: var(--gold-light); }
+
+  /* Price badge */
+  .price-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 40px;
+  }
+  .price-badge strong { color: var(--gold-light); font-size: 15px; }
+
+  /* Form */
+  .form { display: flex; flex-direction: column; gap: 0; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--dust); }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: .04em;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 13px 16px;
+    background: #fff;
+    border: 1.5px solid var(--dust);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    transition: border-color .2s, box-shadow .2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,111,46,.1);
+  }
+  .field input::placeholder { color: #c4b9a8; }
+  .field .hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* Language selector */
+  .lang-selector { display: flex; gap: 8px; margin-bottom: 16px; }
+  .lang-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid var(--dust);
+    border-radius: 8px;
+    background: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+  }
+  .lang-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(156,111,46,.06);
+  }
+
+  /* City autocomplete hint */
+  .city-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    line-height: 1.5;
+  }
+
+  /* Submit button */
+  .submit-wrap { margin-top: 36px; }
+  .btn-submit {
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .04em;
+    cursor: pointer;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(156,111,46,.15));
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .btn-submit:hover { background: #2c2520; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,20,16,.2); }
+  .btn-submit:hover::before { opacity: 1; }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .spinner { width: 18px; height: 18px; border: 2px solid rgba(247,243,237,.3); border-top-color: var(--paper); border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+  .btn-submit.loading .spinner { display: block; }
+  .btn-submit.loading .btn-text { opacity: .7; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .privacy-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 14px; line-height: 1.6; }
+
+  /* States */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+    animation: fadeIn .5s ease;
+  }
+  .success-state.visible { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .success-icon { font-size: 48px; margin-bottom: 20px; }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .success-msg { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 360px; margin: 0 auto; }
+  .success-name { color: var(--gold); font-weight: 500; }
+
+  .error-banner {
+    display: none;
+    background: #fdf0f0;
+    border: 1.5px solid #e8c4c4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--error);
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+  .error-banner.visible { display: block; }
+
+  /* Includes list */
+  .includes {
+    background: #fff;
+    border: 1.5px solid var(--dust);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+  .includes-title { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .includes-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .includes-item::before { content: '◈'; color: var(--gold); font-size: 10px; }
+
+  /* Timezone cities */
+  datalist option { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="lignum">Lignum Group · Identidad Natal</div>
+    <h1 class="title">Tu Mapa de<br><em>Identidad</em></h1>
+    <p class="subtitle">Cinco sistemas simbólicos tejidos en un solo retrato: quién eres, qué traes, qué puedes construir.</p>
+  </div>
+
+  <!-- Includes -->
+  <div class="includes">
+    <div class="includes-title">Tu ficha incluye</div>
+    <div class="includes-item">Zodiaco occidental + Ascendente</div>
+    <div class="includes-item">Horóscopo Chino · año, mes y hora</div>
+    <div class="includes-item">Numerología Pitagórica · 4 números</div>
+    <div class="includes-item">Tzolkin Maya (GMT + Dreamspell)</div>
+    <div class="includes-item">Tonalpohualli Azteca</div>
+    <div class="includes-item">Convergencia + Mantra de identidad</div>
+  </div>
+
+  <div style="text-align:center; margin-bottom: 36px;">
+    <div class="price-badge">
+      Ficha completa · <strong>$99 MXN</strong>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form class="form" id="form" onsubmit="enviar(event)">
+
+    <div class="section-label">Idioma de tu ficha</div>
+    <div class="lang-selector">
+      <button type="button" class="lang-btn active" id="lang-es" onclick="setLang('es')">🇲🇽 Español</button>
+      <button type="button" class="lang-btn" id="lang-en" onclick="setLang('en')">🇺🇸 English</button>
+    </div>
+
+    <div class="section-label">Tus datos</div>
+
+    <div class="field">
+      <label>Nombre completo *</label>
+      <input type="text" id="nombre" placeholder="Como aparece en tu acta de nacimiento" required>
+      <div class="hint">Se usa para calcular tu numerología con precisión.</div>
+    </div>
+
+    <div class="field">
+      <label>Correo electrónico *</label>
+      <input type="email" id="email" placeholder="donde@recibirás.tu ficha" required>
+    </div>
+
+    <div class="section-label">Fecha y hora de nacimiento</div>
+
+    <div class="row3">
+      <div class="field">
+        <label>Día *</label>
+        <input type="number" id="dia" min="1" max="31" placeholder="5" required>
+      </div>
+      <div class="field">
+        <label>Mes *</label>
+        <input type="number" id="mes" min="1" max="12" placeholder="1" required>
+      </div>
+      <div class="field">
+        <label>Año *</label>
+        <input type="number" id="anio" min="1900" max="2010" placeholder="1978" required>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Hora *</label>
+        <input type="number" id="hora" min="0" max="23" placeholder="1" required>
+        <div class="hint">Formato 24h · ej: 1 = 1:00 am · 13 = 1:00 pm</div>
+      </div>
+      <div class="field">
+        <label>Minutos</label>
+        <input type="number" id="minutos" min="0" max="59" placeholder="0" value="0">
+      </div>
+    </div>
+
+    <div class="section-label">Lugar de nacimiento</div>
+
+    <div class="field">
+      <label>Ciudad de nacimiento *</label>
+      <input type="text" id="ciudad" placeholder="ej: Ciudad de México, Guadalajara, Monterrey..." required list="ciudades-comunes">
+      <datalist id="ciudades-comunes">
+        <option value="Ciudad de México, México">
+        <option value="Guadalajara, México">
+        <option value="Monterrey, México">
+        <option value="Puebla, México">
+        <option value="Tijuana, México">
+        <option value="León, México">
+        <option value="Mérida, México">
+        <option value="Querétaro, México">
+        <option value="San Luis Potosí, México">
+        <option value="Aguascalientes, México">
+        <option value="Los Angeles, USA">
+        <option value="New York, USA">
+        <option value="Chicago, USA">
+        <option value="Houston, USA">
+        <option value="Madrid, España">
+        <option value="Buenos Aires, Argentina">
+        <option value="Bogotá, Colombia">
+      </datalist>
+      <div class="city-note">📍 Escribe la ciudad y país para mayor precisión en el ascendente.</div>
+    </div>
+
+    <div class="field">
+      <label>¿Conoces tu ascendente? (opcional)</label>
+      <select id="ascendente">
+        <option value="">No lo sé — lo calculamos con tu ciudad y hora</option>
+        <option value="Aries">Aries</option>
+        <option value="Tauro">Tauro</option>
+        <option value="Géminis">Géminis</option>
+        <option value="Cáncer">Cáncer</option>
+        <option value="Leo">Leo</option>
+        <option value="Virgo">Virgo</option>
+        <option value="Libra">Libra</option>
+        <option value="Escorpio">Escorpio</option>
+        <option value="Sagitario">Sagitario</option>
+        <option value="Capricornio">Capricornio</option>
+        <option value="Acuario">Acuario</option>
+        <option value="Piscis">Piscis</option>
+      </select>
+      <div class="hint">Si ya lo sabes, úsamos ese dato directo para mayor precisión.</div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit" id="btn-submit">
+        <div class="btn-inner">
+          <div class="spinner"></div>
+          <span class="btn-text">Solicitar mi Mapa de Identidad →</span>
+        </div>
+      </button>
+      <p class="privacy-note">Tu información es privada y se usa únicamente para generar tu ficha.<br>Recibirás tu mapa en menos de 5 minutos.</p>
+    </div>
+
+    <div class="error-banner" id="error-banner"></div>
+
+  </form>
+
+  <!-- Success state -->
+  <div class="success-state" id="success-state">
+    <div class="success-icon">✦</div>
+    <h2 class="success-title">Tu mapa está<br><em style="font-style:italic; color:var(--gold)">en camino</em></h2>
+    <p class="success-msg">
+      Gracias, <span class="success-name" id="success-name"></span>.<br><br>
+      Estamos calculando tus cinco sistemas y tejiendo tu perfil. En menos de 5 minutos recibirás tu Mapa de Identidad en <span class="success-name" id="success-email"></span>.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  const WEBHOOK_URL = 'https://hook.us2.make.com/e66mq1624ioan0k4p6uou2cg4rczobwp';
+  let idiomaSeleccionado = 'es';
+
+  function setLang(lang) {
+    idiomaSeleccionado = lang;
+    document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  }
+
+  async function enviar(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit');
+    const errBanner = document.getElementById('error-banner');
+    errBanner.classList.remove('visible');
+
+    // Recoger datos
+    const nombre   = document.getElementById('nombre').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const dia      = parseInt(document.getElementById('dia').value);
+    const mes      = parseInt(document.getElementById('mes').value);
+    const anio     = parseInt(document.getElementById('anio').value);
+    const hora     = parseInt(document.getElementById('hora').value);
+    const minutos  = parseInt(document.getElementById('minutos').value) || 0;
+    const ciudad   = document.getElementById('ciudad').value.trim();
+    const ascendente = document.getElementById('ascendente').value;
+
+    // Validaciones básicas
+    if (!nombre || !email || !dia || !mes || !anio || isNaN(hora) || !ciudad) {
+      errBanner.textContent = 'Por favor llena todos los campos obligatorios.';
+      errBanner.classList.add('visible');
+      return;
+    }
+    if (hora < 0 || hora > 23) {
+      errBanner.textContent = 'La hora debe ser entre 0 y 23.';
+      errBanner.classList.add('visible');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    const payload = {
+      nombre, email,
+      dia, mes, anio,
+      hora, minutos,
+      ciudad,
+      ascendente: ascendente || null,
+      idioma: idiomaSeleccionado,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok || res.status === 200) {
+        // Mostrar éxito
+        document.getElementById('form').style.display = 'none';
+        document.getElementById('success-name').textContent = nombre.split(' ')[0];
+        document.getElementById('success-email').textContent = email;
+        document.getElementById('success-state').classList.add('visible');
+        // Scroll al inicio
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error(`Error ${res.status}`);
+      }
+    } catch(err) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      errBanner.innerHTML = `Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.<br><small style="opacity:.7">${err.message}</small>`;
+      errBanner.classList.add('visible');
+    }
+  }
+</script>
+
+</body>
+</html>
