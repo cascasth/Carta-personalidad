@@ -829,7 +829,9 @@
         document.getElementById('success-name').textContent = nombre.split(' ')[0];
         document.getElementById('success-email').textContent = email;
         document.getElementById('success-state').classList.add('visible');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+setTimeout(() => {
+  document.getElementById('success-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}, 100);
       } else {
         throw new Error(`Error ${res.status}`);
       }
