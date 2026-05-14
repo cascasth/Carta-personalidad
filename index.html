@@ -430,6 +430,35 @@
     margin-bottom: 10px;
     display: block;
   }
+
+.hero-benefits {
+  margin: 10px 0 42px;
+  text-align: center;
+}
+
+.hero-benefits img {
+  width: 100%;
+  max-width: 900px;
+  border-radius: 18px;
+  border: 1px solid rgba(201,168,76,.15);
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.45),
+    0 0 30px rgba(107,63,160,.18);
+  opacity: .96;
+}
+
+  .hero-benefits img {
+  backdrop-filter: blur(4px);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.hero-benefits img:hover {
+  transform: scale(1.01);
+  box-shadow:
+    0 16px 60px rgba(0,0,0,.55),
+    0 0 40px rgba(201,168,76,.18);
+}
+  
 </style>
 </head>
 <body>
@@ -437,6 +466,11 @@
 <div class="page">
 
   <div class="header">
+    
+    <!-- Imagen beneficios -->
+<div class="hero-benefits">
+  <img src="mapa-beneficios.png" alt="Beneficios del Mapa de Identidad Natal">
+</div>
     <span class="mandala-symbol">🔮</span>
     <span class="brand-name">Mandala Land</span>
     <h1 class="title">Tu Mapa de<br><em>Identidad Natal</em></h1>
