@@ -518,17 +518,57 @@
     .quick-links { grid-template-columns: 1fr; }
     .row2, .row3 { grid-template-columns: 1fr; }
   }
+
+.logo-wrap{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.logo-badge{
+  width:140px;
+  height:140px;
+  margin:0 auto;
+  border-radius:50%;
+
+  background:
+    radial-gradient(circle at center,
+      rgba(220,210,255,.95) 0%,
+      rgba(185,160,240,.72) 45%,
+      rgba(120,90,180,.18) 72%,
+      transparent 100%);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:
+    0 0 35px rgba(180,150,255,.22),
+    0 0 80px rgba(120,90,180,.14);
+
+  backdrop-filter: blur(10px);
+}
+
+.logo-mandala{
+  width:92px;
+  position:relative;
+  z-index:2;
+}
+    
 </style>
 </head>
 <body>
 
 <div class="page">
 
-  <!-- Header correcto: logo/título/subtítulo van primero -->
-  <div class="header">
+<!-- Header correcto: logo/título/subtítulo van primero -->
+<div class="header">
+
+  <div class="logo-wrap">
+    <div class="logo-badge">
+      <img src="logo-mandala-land.png" class="logo-mandala" alt="Mandala Land">
+    </div>
+  </div>
     
-    <img class="brand-logo" src="logo-mandala-land.png" alt="Mandala Land" onerror="this.style.display='none'">
-    <span class="mandala-symbol">🔮</span>
     <span class="brand-name">Mandala Land</span>
     <h1 class="title">Tu Mapa de<br><em>Identidad Natal</em></h1>
     <p class="subtitle">Siete sistemas simbólicos tejidos en un solo retrato: quién eres, qué traes, qué puedes construir.</p>
@@ -555,7 +595,7 @@
     <div class="includes-item">Tzolkin Maya · GMT tradicional + Dreamspell</div>
     <div class="includes-item">Tonalpohualli Azteca · correlación GMT</div>
     <div class="includes-item">Calendario de Anáhuac · tradición nahua</div>
-    <div class="includes-item">Convergencia + Mantra de identidad</div>
+    <div class="includes-item">Integración · el hilo que une todo</div>
   </section>
 
   <!-- Para qué sirve -->
