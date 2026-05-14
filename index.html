@@ -775,7 +775,7 @@
     document.getElementById('payment-step').style.display = 'block';
     document.getElementById('form').reset();
     setLang('es');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('success-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   async function enviar(e) {
