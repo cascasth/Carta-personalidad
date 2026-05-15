@@ -882,19 +882,6 @@
     }, 400);
   }
 
-  // PayPal primero
-  paypal.HostedButtons({
-    hostedButtonId: "KCU4KJ4U3TFEE",
-    onApprove: function() {
-      mostrarFormulario();
-    }
-  }).render("#paypal-container-KCU4KJ4U3TFEE");
-
-  // Detectar ?pagado=si DESPUÉS de definir todo
-  if (new URLSearchParams(window.location.search).get('pagado') === 'si') {
-    mostrarFormulario();
-  }
-
   function setLang(lang) {
     idiomaSeleccionado = lang;
     document.getElementById('lang-es').classList.toggle('active', lang === 'es');
@@ -908,7 +895,18 @@
     document.getElementById('payment-step').style.display = 'block';
     document.getElementById('form').reset();
     setLang('es');
-    document.getElementById('success-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  paypal.HostedButtons({
+    hostedButtonId: "KCU4KJ4U3TFEE",
+    onApprove: function() {
+      mostrarFormulario();
+    }
+  }).render("#paypal-container-KCU4KJ4U3TFEE");
+
+  if (new URLSearchParams(window.location.search).get('pagado') === 'si') {
+    mostrarFormulario();
   }
 
   async function enviar(e) {
@@ -962,9 +960,9 @@
         document.getElementById('success-name').textContent = nombre.split(' ')[0];
         document.getElementById('success-email').textContent = email;
         document.getElementById('success-state').classList.add('visible');
-setTimeout(() => {
-  document.getElementById('success-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
-}, 400);
+        setTimeout(() => {
+          document.getElementById('success-state').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 400);
       } else {
         throw new Error(`Error ${res.status}`);
       }
