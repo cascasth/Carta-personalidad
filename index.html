@@ -870,18 +870,30 @@
 </div>
 
 <script>
+  const WEBHOOK_URL = 'https://hook.us2.make.com/e66mq1624ioan0k4p6uou2cg4rczobwp';
+  let idiomaSeleccionado = 'es';
 
-  // Detectar redirección de PayPal con ?pagado=si
-  if (new URLSearchParams(window.location.search).get('pagado') === 'si') {
-    mostrarFormulario();
+  function mostrarFormulario() {
+    document.getElementById('payment-step').style.display = 'none';
+    document.getElementById('step-divider').style.display = 'flex';
+    document.getElementById('form').style.display = 'flex';
+    setTimeout(() => {
+      document.getElementById('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
   }
 
+  // PayPal primero
   paypal.HostedButtons({
     hostedButtonId: "KCU4KJ4U3TFEE",
     onApprove: function() {
       mostrarFormulario();
     }
   }).render("#paypal-container-KCU4KJ4U3TFEE");
+
+  // Detectar ?pagado=si DESPUÉS de definir todo
+  if (new URLSearchParams(window.location.search).get('pagado') === 'si') {
+    mostrarFormulario();
+  }
 
   function setLang(lang) {
     idiomaSeleccionado = lang;
