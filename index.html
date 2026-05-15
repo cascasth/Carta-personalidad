@@ -840,20 +840,7 @@
       <div class="hint">Si ya lo sabes, usamos ese dato directo para mayor precisión.</div>
     </div>
 
-    <div class="submit-wrap">
-      <button type="submit" class="btn-submit" id="btn-submit">
-        <div class="btn-inner">
-          <div class="spinner"></div>
-          <span class="btn-text">✦ Solicitar mi Mapa de Identidad</span>
-        </div>
-     <button
-  type="button"
-  class="btn-submit"
-  onclick="document.getElementById('payment-step').scrollIntoView({behavior:'smooth'})"
->
-  
-       
-</button>
+    
 
     <div class="error-banner" id="error-banner"></div>
 
@@ -883,15 +870,6 @@
 </div>
 
 <script>
-  const WEBHOOK_URL = 'https://hook.us2.make.com/e66mq1624ioan0k4p6uou2cg4rczobwp';
-  let idiomaSeleccionado = 'es';
-
-  function mostrarFormulario() {
-    document.getElementById('payment-step').style.display = 'none';
-    document.getElementById('step-divider').style.display = 'flex';
-    document.getElementById('form').style.display = 'flex';
-    document.getElementById('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
 
   // Detectar redirección de PayPal con ?pagado=si
   if (new URLSearchParams(window.location.search).get('pagado') === 'si') {
