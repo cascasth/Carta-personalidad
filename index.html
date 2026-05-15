@@ -138,26 +138,28 @@
     text-shadow: 0 0 10px rgba(0,0,0,.45);
   }
 
-  .quick-links {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.quick-links {
+    display: flex;
+    justify-content: center;
     gap: 10px;
     margin: 26px 0 34px;
   }
 
-  .orb-link {
-   display: flex;
-   justify-content: center;
-   gap: 18px;
-   flex-wrap: wrap;
-    min-height: 82px;
-    padding: 12px 8px;
+.orb-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 160px;
+    min-height: 100px;
+    padding: 16px 12px;
     border: 1px solid var(--border-soft);
     border-radius: 16px;
     background: rgba(12,8,28,.72);
     color: var(--fog);
     text-decoration: none;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.25;
     text-align: center;
     transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
@@ -857,15 +859,7 @@
     <button class="btn-otro" onclick="reiniciar()">Solicitar otra ficha →</button>
   </div>
 
-  <div class="contact-footer">
-    <span class="contact-brand">Mandala Land · Centro Ser Integral</span>
-    <p>
-      ¿Dudas o comentarios?<br>
-      <a href="mailto:centro.ser.integral">centro.ser.integral@gmail.com</a><br>
-      <a href="https://www.instagram.com/cacty_artesaniamx/#" target="_blank">@mandalaland</a> ·
-      <a href="privacidad.html" target="_blank">Aviso de privacidad</a>
-    </p>
-  </div>
+ 
 
 </div>
 
