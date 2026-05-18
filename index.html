@@ -913,6 +913,31 @@ function mostrarFormulario() {
     mostrarFormulario();
   }
 
+async function geocodificarCiudad(ciudad) {
+  // Paso 1: ciudad → lat/lng usando OpenStreetMap (gratis, sin llave)
+  const geoRes = await fetch(
+    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(ciudad)}&format=json&limit=1`,
+    { headers: { 'User-Agent': 'MapaIdentidadNatal/1.0' } }
+  );
+  const geoData = await geoRes.json();
+
+  if (!geoData || geoData.length === 0) {
+    throw new Error('ciudad_no_encontrada');
+  }
+
+  const lat = parseFloat(geoData[0].lat);
+  const lng = parseFloat(geoData[0].lon);
+
+  // Paso 2: coordenadas → zona horaria (gratis, sin llave)
+  const tzRes = await fetch(
+    `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lng}`
+  );
+  const tzData = await tzRes.json();
+  const timezone = tzData.currentUtcOffset.seconds / 3600;
+
+  return { lat, lng, timezone };
+}
+  
   async function enviar(e) {
     e.preventDefault();
     const btn = document.getElementById('btn-submit');
@@ -940,12 +965,32 @@ function mostrarFormulario() {
       return;
     }
 
-    btn.disabled = true;
+btn.disabled = true;
     btn.classList.add('loading');
+    document.querySelector('.btn-text').textContent = '📍 Buscando ciudad...';
+
+    let coordenadas;
+    try {
+      coordenadas = await geocodificarCiudad(ciudad);
+    } catch (geoErr) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      document.querySelector('.btn-text').textContent = '✦ Solicitar mi Mapa de Identidad';
+      errBanner.textContent = `No pudimos encontrar "${ciudad}". Escríbela con país, por ejemplo: "Guadalajara, México" o "Madrid, España"`;
+      errBanner.classList.add('visible');
+      return;
+    }
+
+    document.querySelector('.btn-text').textContent = '✦ Enviando tu solicitud...';
+
+    const payload = {
 
     const payload = {
       nombre, email, dia, mes, anio,
       hora, minutos, ciudad,
+      lat: coordenadas.lat,
+      lng: coordenadas.lng,
+      timezone: coordenadas.timezone,
       ascendente: ascendente || null,
       idioma: idiomaSeleccionado,
       timestamp: new Date().toISOString()
@@ -970,9 +1015,10 @@ function mostrarFormulario() {
       } else {
         throw new Error(`Error ${res.status}`);
       }
-    } catch(err) {
+} catch(err) {
       btn.disabled = false;
       btn.classList.remove('loading');
+      document.querySelector('.btn-text').textContent = '✦ Solicitar mi Mapa de Identidad'; // ← aquí
       errBanner.innerHTML = `Hubo un problema al enviar tu solicitud. Por favor intenta de nuevo.<br><small style="opacity:.6">${err.message}</small>`;
       errBanner.classList.add('visible');
     }
