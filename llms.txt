@@ -1,0 +1,36 @@
+# Mapa de Identidad Natal
+
+> Sitio web de Centro del Ser (México) que genera perfiles simbólicos personalizados
+> combinando cinco sistemas de conocimiento ancestral.
+
+## ¿Qué es?
+
+Un documento digital personalizado —llamado "mapa de identidad natal"— que se genera
+automáticamente a partir de la fecha, hora y lugar de nacimiento de una persona.
+Se entrega por correo electrónico en minutos tras completar el formulario.
+
+## Sistemas que integra
+
+- Astrología Occidental (signo solar + ascendente por casas Placidus)
+- Horóscopo Chino (animal de año, mes y hora)
+- Numerología Pitagórica
+- Tzolkin Maya (correlación GMT tradicional y Dreamspell/Brújula Galáctica)
+- Tonalpohualli Azteca (correlación JD 584237)
+
+## Propósito
+
+Herramienta de autoconocimiento y orientación simbólica. No es diagnóstico médico
+ni psicológico. Su intención es contemplativa y espiritual.
+
+## Público
+
+Personas hispanohablantes (principalmente México) interesadas en espiritualidad,
+astrología y sistemas de conocimiento ancestral mesoamericano.
+
+## URL principal
+
+https://cascasth.github.io/Mapa-identidad-natal/
+
+## Contacto
+
+Centro del Ser
